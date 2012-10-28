@@ -1,9 +1,4 @@
-/**
- * Created with IntelliJ IDEA.
- * User: Bhawna
- * Date: 10/28/12
- * Time: 1:11 PM
- */
+
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -54,46 +49,26 @@ public class TeleService {
                 String userService = services.next().toString();
                 if (userService.equals("SMS") ) {
                     cost+=2;
-                    incSMSCounter(reporter,key);
+                    incCounter(reporter,key,Teleservice.NUMBER_OF_SMS,"perUserSMS");
                 } else if(userService.equals("VOICE")){
                     cost+=100;
-                    incVoiceCounter(reporter,key);
+                    incCounter(reporter,key,Teleservice.NUMBER_OF_VOICE_CALLS,"perUserVOICE");
                 } else
-                    incInvalidCounter(reporter,userService);
-                incTransactionCounter(reporter,key);
+                    incCounter(reporter,key,Teleservice.INVALID_INPUTS,userService);
+                incCounter(reporter,key,Teleservice.NUMBER_OF_TRANSACTIONS,"perUserTransactions");
             }
             if (cost > 0) {
                 output.collect(key, new LongWritable(cost));
             }
         }
 
-        //Increments number of SMS
-        void incSMSCounter (Reporter reporter,Text key){
-            reporter.getCounter(Teleservice.NUMBER_OF_SMS).increment(1);    //Counter for Total Number Of SMS in Transaction
-            reporter.getCounter("perUserSMS",key.toString()).increment(1);  //dynamic Counter for Number Of SMS Per User
+        //Increments counter values
+        void incCounter (Reporter reporter,Text key,Teleservice service,String str){
+            reporter.getCounter(service).increment(1);    //increment Counter
+            reporter.getCounter(str,key.toString()).increment(1);  //dynamic Counter
 
         }
-        //Increments number of Voice Calls
-        void incVoiceCounter (Reporter reporter,Text key){
-            reporter.getCounter(Teleservice.NUMBER_OF_VOICE_CALLS).increment(1); //Counter For Total Number Of Voice Calls in Transaction
-            reporter.getCounter("perUserVOICE",key.toString()).increment(1);    //dynamic Counter for NUmber Of Voice Calls Per User
-
-
-        }
-        //Increments number of Invalid Inputs
-        void incInvalidCounter(Reporter reporter,String userService){
-            System.err.println("Ignoring invalid input: " + userService);
-            reporter.getCounter(Teleservice.INVALID_INPUTS).increment(1);     //Counter for Invalid Inputs(Other than VOICE or SMS)
-
-        }
-        //Increments number of Transactions
-        void incTransactionCounter(Reporter reporter,Text key){
-            reporter.getCounter(Teleservice.NUMBER_OF_TRANSACTIONS).increment(1);   //Counter For Total Number Of Transactions
-            reporter.getCounter("perUserTransactions",key.toString()).increment(1); //Dynamic Counter for Number Of Transactions Per User
-
-        }
-
-     }
+    }
 
     public static void main(String[] args) throws Exception {
         JobConf conf = new JobConf(TeleService.class);
@@ -121,6 +96,5 @@ public class TeleService {
 
     }
 }
-
-
+    
 

@@ -28,7 +28,6 @@ public class TeleService {
         NUMBER_OF_SMS,
         NUMBER_OF_VOICE_CALLS,
         NUMBER_OF_TRANSACTIONS ,
-        COST
     }
 
 

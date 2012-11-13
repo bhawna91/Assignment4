@@ -1,0 +1,8 @@
+#ignore iml files
+*.iml
+#ignore out folder contents
+out
+#ignore .idea folder contents
+.idea
+#ignore the log files
+*.log

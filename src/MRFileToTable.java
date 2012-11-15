@@ -1,5 +1,3 @@
-
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -22,20 +20,22 @@ public class MRFileToTable{
 
     static class FileToTableMapper extends Mapper<LongWritable, Text, ImmutableBytesWritable, Put> {
 
+        // Store user info from log to UserTable.
         protected void map(LongWritable key, Text value, Context context)throws IOException, InterruptedException {
             String LogStr = value.toString();
             if (LogStr.contains(" ")) {
                 String[] logArr = LogStr.split(" ");
                 byte[] rowkey=key.toString().getBytes();
                 Put put = new Put(rowkey);
-                put.add(Bytes.toBytes("UserId"), Bytes.toBytes("UserId"),Bytes.toBytes(logArr[0]));
-                put.add(Bytes.toBytes("Transaction"), Bytes.toBytes("Date"), Bytes.toBytes(logArr[1]));
-                put.add(Bytes.toBytes("Transaction"), Bytes.toBytes("Service"), Bytes.toBytes(logArr[2]));
+                put.add(Bytes.toBytes("cf1"), Bytes.toBytes("UserId"),Bytes.toBytes(logArr[0]));
+                put.add(Bytes.toBytes("cf2"), Bytes.toBytes("Date"), Bytes.toBytes(logArr[1]));
+                put.add(Bytes.toBytes("cf2"), Bytes.toBytes("Service"), Bytes.toBytes(logArr[2]));
                 context.write(new ImmutableBytesWritable(rowkey),put);
             }
         }
     }
 
+    //Set up the MapReduce job.
     public int execute() throws Exception {
         Configuration myConf = HBaseConfiguration.create();
         Job job = new Job(myConf,"TransferFileToTable");

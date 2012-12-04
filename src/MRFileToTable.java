@@ -28,8 +28,8 @@ public class MRFileToTable{
                 byte[] rowkey=key.toString().getBytes();
                 Put put = new Put(rowkey);
                 put.add(Bytes.toBytes("cf1"), Bytes.toBytes("UserId"),Bytes.toBytes(logArr[0]));
-                put.add(Bytes.toBytes("cf2"), Bytes.toBytes("Date"), Bytes.toBytes(logArr[1]));
-                put.add(Bytes.toBytes("cf2"), Bytes.toBytes("Service"), Bytes.toBytes(logArr[2]));
+                put.add(Bytes.toBytes("cf1"), Bytes.toBytes("Date"), Bytes.toBytes(logArr[1]));
+                put.add(Bytes.toBytes("cf1"), Bytes.toBytes("Service"), Bytes.toBytes(logArr[2]));
                 context.write(new ImmutableBytesWritable(rowkey),put);
             }
         }

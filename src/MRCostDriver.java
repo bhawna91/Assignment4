@@ -1,10 +1,4 @@
-/**
- * Created with IntelliJ IDEA.
- * User: Bhawna
- * Date: 11/12/12
- * Time: 10:44 PM
- * To change this template use File | Settings | File Templates.
- */
+
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -32,7 +26,7 @@ public class MRCostDriver {
         public void map(ImmutableBytesWritable row, Result values, Context context) throws IOException {
 
             Text userId = new Text(Bytes.toString(values.getValue(Bytes.toBytes("cf1"), Bytes.toBytes("UserId"))));
-            Text userService = new Text(Bytes.toString(values.getValue(Bytes.toBytes("cf2"), Bytes.toBytes("Service"))));
+            Text userService = new Text(Bytes.toString(values.getValue(Bytes.toBytes("cf1"), Bytes.toBytes("Service"))));
 
             try {
                 context.write(userId, userService);
@@ -57,7 +51,7 @@ public class MRCostDriver {
             byte[] rowkey = key.toString().getBytes();
             Put put = new Put(rowkey);
             put.add(Bytes.toBytes("cf1"), Bytes.toBytes("UserId"), Bytes.toBytes(key.toString()));
-            put.add(Bytes.toBytes("cf2"), Bytes.toBytes("Cost"), Bytes.toBytes(Integer.toString(cost)));
+            put.add(Bytes.toBytes("cf1"), Bytes.toBytes("Cost"), Bytes.toBytes(Integer.toString(cost)));
 
 
             context.write(new ImmutableBytesWritable(rowkey), put);
